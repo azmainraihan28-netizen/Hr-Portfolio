@@ -10,6 +10,20 @@ import { ChatAssistant } from './components/ChatAssistant';
 
 const App: React.FC = () => {
   const [isDark, setIsDark] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (totalScroll / windowHeight) * 100;
+      setScrollProgress(scrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isDark) {
@@ -20,9 +34,16 @@ const App: React.FC = () => {
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(!isDark);
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0b1120] text-gray-900 dark:text-gray-100 selection:bg-[#f97316] selection:text-white transition-colors duration-300">
+      {/* Scroll Progress Bar */}
+      <div 
+        className="fixed top-0 left-0 h-1 bg-[#f97316] z-[60] transition-all duration-150 ease-out"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 transition-all duration-300 bg-white/90 dark:bg-[#0b1120]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,12 +60,12 @@ const App: React.FC = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-colors">About</a>
-              <a href="#experience" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-colors">Experience</a>
-              <a href="#education" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-colors">Education</a>
-              <a href="#achievements" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-colors">Achievements</a>
-              <a href="#skills" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-colors">Skills</a>
-              <a href="#contact" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-colors">Contact</a>
+              <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-all hover:scale-105">About</a>
+              <a href="#experience" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-all hover:scale-105">Experience</a>
+              <a href="#education" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-all hover:scale-105">Education</a>
+              <a href="#achievements" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-all hover:scale-105">Achievements</a>
+              <a href="#skills" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-all hover:scale-105">Skills</a>
+              <a href="#contact" className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-[#f97316] text-sm font-medium transition-all hover:scale-105">Contact</a>
               
               {/* Theme Toggle Button */}
               <button 
@@ -63,9 +84,9 @@ const App: React.FC = () => {
                 )}
               </button>
 
-              <button className="px-6 py-2.5 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-semibold rounded-full transition-all shadow-lg shadow-orange-500/20">
+              <a href="#" className="px-6 py-2.5 bg-[#f97316] hover:bg-orange-600 text-white text-sm font-semibold rounded-full transition-all shadow-lg shadow-orange-500/20 hover:scale-105">
                 Resume
-              </button>
+              </a>
             </div>
 
             {/* Mobile Menu Button */}
@@ -84,14 +105,43 @@ const App: React.FC = () => {
                   </svg>
                 )}
               </button>
-              <button className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-white">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+              <button 
+                onClick={toggleMobileMenu}
+                className="text-gray-600 dark:text-gray-300 hover:text-[#f97316] dark:hover:text-white transition-colors p-1"
+                aria-label="Toggle Mobile Menu"
+              >
+                {isMobileMenuOpen ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0b1120] animate-fade-in-up">
+            <div className="px-4 pt-2 pb-6 space-y-1">
+              <a href="#about" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#f97316] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors">About</a>
+              <a href="#experience" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#f97316] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors">Experience</a>
+              <a href="#education" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#f97316] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors">Education</a>
+              <a href="#achievements" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#f97316] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors">Achievements</a>
+              <a href="#skills" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#f97316] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors">Skills</a>
+              <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-gray-700 dark:text-gray-200 hover:text-[#f97316] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors">Contact</a>
+              <div className="pt-4">
+                <a href="#" onClick={() => setIsMobileMenuOpen(false)} className="block w-full text-center px-6 py-3 bg-[#f97316] hover:bg-orange-600 text-white text-base font-semibold rounded-full transition-all shadow-lg shadow-orange-500/20">
+                  Resume
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </nav>
 
       <main>

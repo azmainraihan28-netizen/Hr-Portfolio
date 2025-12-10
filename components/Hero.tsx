@@ -1,9 +1,65 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PROFILE_DATA } from '../constants';
 
 export const Hero: React.FC = () => {
+  const heroRef = useRef<HTMLElement>(null);
+  const blob1Ref = useRef<HTMLDivElement>(null);
+  const blob2Ref = useRef<HTMLDivElement>(null);
+  const blob3Ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // Only animate if the hero section is mounted
+      if (!heroRef.current) return;
+      
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      
+      // Calculate normalized mouse position (-1 to 1) relative to the center of the screen
+      const x = (clientX / innerWidth) * 2 - 1;
+      const y = (clientY / innerHeight) * 2 - 1;
+
+      // Apply parallax effect with different speeds for depth perception
+      if (blob1Ref.current) {
+        blob1Ref.current.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+      }
+      if (blob2Ref.current) {
+        blob2Ref.current.style.transform = `translate(${x * -30}px, ${y * -30}px)`;
+      }
+      if (blob3Ref.current) {
+         blob3Ref.current.style.transform = `translate(${x * 15}px, ${y * -15}px)`;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   return (
-    <section id="hero" className="relative min-h-screen flex items-center bg-gray-50 dark:bg-[#0b1120] overflow-hidden pt-20 transition-colors duration-300">
+    <section 
+      id="hero" 
+      ref={heroRef} 
+      className="relative min-h-screen flex items-center bg-gray-50 dark:bg-[#0b1120] overflow-hidden pt-20 transition-colors duration-300"
+    >
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Blob 1: Top Left - Purple */}
+        <div 
+          ref={blob1Ref}
+          className="absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] min-w-[400px] min-h-[400px] bg-purple-300/30 dark:bg-purple-900/20 rounded-full blur-[80px] sm:blur-[120px] transition-transform duration-75 ease-out will-change-transform"
+        />
+        {/* Blob 2: Right Center - Orange (Primary) */}
+        <div 
+          ref={blob2Ref}
+          className="absolute top-[20%] -right-[10%] w-[40vw] h-[40vw] min-w-[300px] min-h-[300px] bg-[#f97316]/20 dark:bg-[#f97316]/10 rounded-full blur-[60px] sm:blur-[100px] transition-transform duration-75 ease-out will-change-transform"
+        />
+        {/* Blob 3: Bottom Left - Blue */}
+        <div 
+          ref={blob3Ref}
+          className="absolute -bottom-[10%] left-[10%] w-[45vw] h-[45vw] min-w-[350px] min-h-[350px] bg-blue-300/30 dark:bg-blue-900/20 rounded-full blur-[80px] sm:blur-[120px] transition-transform duration-75 ease-out will-change-transform"
+        />
+      </div>
+
       {/* Grid Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.05)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>

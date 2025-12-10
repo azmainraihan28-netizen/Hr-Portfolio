@@ -43,12 +43,7 @@ const getSystemInstruction = (): string => {
 export const initializeChat = async (): Promise<Chat> => {
   if (chatSession) return chatSession;
 
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new Error("API_KEY is missing from environment variables.");
-  }
-
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   chatSession = ai.chats.create({
     model: 'gemini-2.5-flash',
